@@ -1,0 +1,4 @@
+{
+  "name": "<%= answers.appName %>",
+  "private": "true"
+}

@@ -6,6 +6,7 @@
  * Licensed under the MIT license.
  */
 
+
 'use strict';
 
 var gulp = require('gulp'),
@@ -16,9 +17,15 @@ var gulp = require('gulp'),
     _ = require('underscore.string'),
     inquirer = require('inquirer');
 
-function format(string) {
-    if(string) {
-        var username = string.toLowerCase();
+function format(user) {
+    var name;
+
+    if(user && user.name) {
+      name = user.name;
+    }
+
+    if(name) {
+        var username = name.toLowerCase();
         return username.replace(/\s/g, '');
     } else {
         return "";
@@ -36,8 +43,8 @@ var defaults = (function () {
     }
     return {
         appName: workingDirName,
-        userName: format(user.name) || osUserName,
-        authorEmail: user.email || ''
+        userName: format(user) || osUserName,
+        authorEmail: (user && user.email) || ''
     };
 })();
 
@@ -84,8 +91,8 @@ gulp.task('default', function (done) {
             gulp.src(__dirname + '/templates/**')
                 .pipe(template(inputData))
                 .pipe(rename(function (file) {
-                    if(file.basename.indexOf('%') === 0) {
-                        file.basename = file.basename.replace('%','.');
+                    if (file.basename[0] === '_') {
+                        file.basename = '.' + file.basename.slice(1);
                     }
                 }))
                 .pipe(conflict('./'))
